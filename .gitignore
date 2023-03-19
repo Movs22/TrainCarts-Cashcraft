@@ -1,0 +1,49 @@
+# Eclipse stuff
+.classpath
+.project
+.settings/
+
+# Minecraft stuff added during test
+minecraft/
+logs/
+hashtest
+
+# netbeans
+nbproject/
+nbactions.xml
+nb-configuration.xml
+
+# we use maven!
+build.xml
+
+# maven
+target/
+dependency-reduced-pom.xml
+
+# vim
+.*.sw[a-p]
+
+# various other potential build files
+build/
+bin/
+dist/
+out/
+manifest.mf
+
+# Mac filesystem dust
+.DS_Store/
+
+# intellij
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# other files
+*.log*
+.git/
+
+# delombok
+*/src/main/lombok
+/target/
+/bin/
