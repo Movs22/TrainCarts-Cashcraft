@@ -81,6 +81,7 @@ import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class TrainCarts extends PluginBase {
+	public int _version = 1627;
     public static TrainCarts plugin;
     private Task signtask;
     private Task autosaveTask;
@@ -149,6 +150,10 @@ public class TrainCarts extends PluginBase {
         return this.spawnSignManager;
     }
 
+    public int getTCVersion() {
+    	return this._version;
+    }
+    
     /**
      * Gets access to the place where attachment models are stored, loaded and saved
      * 
@@ -540,7 +545,9 @@ public class TrainCarts extends PluginBase {
 
         // Register TrainCarts default attachment types
         CartAttachment.registerDefaultAttachments();
-
+        if(this.getVersion() != ("" + this.getTCVersion())) {
+        	this.log(Level.SEVERE, "Traincart version mismatch. Found " + this.getVersion() + " on config but " + this.getTCVersion() + " on TrainCarts.java");
+        }
         // Register TrainCarts default rail types
         RailType.values();
 
@@ -560,7 +567,7 @@ public class TrainCarts extends PluginBase {
         //Initialize early so that others can register handlers
         //Loading is done in enable()
         this.pathProvider = new PathProvider(this);
-
+        
         // We allow other plugins to register stuff during onLoad() as well
         plugin = this;
     }
