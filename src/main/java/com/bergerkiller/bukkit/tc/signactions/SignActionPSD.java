@@ -14,12 +14,12 @@ import com.bergerkiller.bukkit.tc.utils.SignBuildOptions;
 
 public class SignActionPSD extends SignAction {
 
+	
 	@Override
 	public boolean match(SignActionEvent info) {
 		return info.isType("psd");
 	}
-
-	public void place(SignActionEvent sign, int x, int y, int z, Material block, int doors, BlockFace facing) {
+	public void place(SignActionEvent sign, int x, int y, int z, Material block, int doors, BlockFace facing, String offset) {
 		/*
 		 * Changes relative X Y Z to be the same even if the sign's facing is different
 		 * (X = left/right, Z = front/back)
@@ -42,10 +42,10 @@ public class SignActionPSD extends SignAction {
 			x = x1;
 			z = z1;
 		}
-		if(sign.getExtraLinesBelow().length > 0 && sign.getExtraLinesBelow()[0].split("/").length == 3 ) {
-			x = x + Integer.parseInt(sign.getExtraLinesBelow()[0].split("/")[0]);
-			y = y + Integer.parseInt(sign.getExtraLinesBelow()[0].split("/")[1]);
-			z = z + Integer.parseInt(sign.getExtraLinesBelow()[0].split("/")[2]);
+		if(offset != "" && offset.split("/").length == 3 ) {
+			x = x + Integer.parseInt(offset.split("/")[0]);
+			y = y + Integer.parseInt(offset.split("/")[1]);
+			z = z + Integer.parseInt(offset.split("/")[2]);
 		}
 
 		Block b = sign.getBlock().getRelative(x, y, z);
@@ -116,48 +116,24 @@ public class SignActionPSD extends SignAction {
 		}
 
 	}
-
+	public int chimes;
 	public void blink(int doors, SignActionEvent info) {
-		place(info, 2, 1, 2, Material.OCHRE_FROGLIGHT, doors, info.getFacing());
+		String offset = info.getExtraLinesBelow()[0];
+		chimes = 0;
+		place(info, 2, 1, 2, Material.OCHRE_FROGLIGHT, doors, info.getFacing(), offset);
 		chime(info, 2, 1, 4, doors);
-		Bukkit.getScheduler().runTaskLater(info.getTrainCarts(), () -> {
-			place(info, 2, 1, 2, Material.GRAY_CONCRETE, doors, info.getFacing());
-        }, new Long(2));
-		Bukkit.getScheduler().runTaskLater(info.getTrainCarts(), () -> {
-			place(info, 2, 1, 2, Material.OCHRE_FROGLIGHT, doors, info.getFacing());
-			chime(info, 2, 1, 4, doors);
-        }, new Long(4));
-		Bukkit.getScheduler().runTaskLater(info.getTrainCarts(), () -> {
-			place(info, 2, 1, 2, Material.GRAY_CONCRETE, doors, info.getFacing());
-        }, new Long(6));
-		Bukkit.getScheduler().runTaskLater(info.getTrainCarts(), () -> {
-			place(info, 2, 1, 2, Material.OCHRE_FROGLIGHT, doors, info.getFacing());
-			chime(info, 2, 1, 4, doors);
-        }, new Long(8));
-		Bukkit.getScheduler().runTaskLater(info.getTrainCarts(), () -> {
-			place(info, 2, 1, 2, Material.GRAY_CONCRETE, doors, info.getFacing());
-        }, new Long(10));
-		Bukkit.getScheduler().runTaskLater(info.getTrainCarts(), () -> {
-			place(info, 2, 1, 2, Material.OCHRE_FROGLIGHT, doors, info.getFacing());
-			chime(info, 2, 1, 4, doors);
-        }, new Long(12));
-		Bukkit.getScheduler().runTaskLater(info.getTrainCarts(), () -> {
-			place(info, 2, 1, 2, Material.GRAY_CONCRETE, doors, info.getFacing());
-        }, new Long(14));
-		Bukkit.getScheduler().runTaskLater(info.getTrainCarts(), () -> {
-			place(info, 2, 1, 2, Material.OCHRE_FROGLIGHT, doors, info.getFacing());
-			chime(info, 2, 1, 4, doors);
-        }, new Long(16));
-		Bukkit.getScheduler().runTaskLater(info.getTrainCarts(), () -> {
-			place(info, 2, 1, 2, Material.GRAY_CONCRETE, doors, info.getFacing());
-        }, new Long(18));
-		Bukkit.getScheduler().runTaskLater(info.getTrainCarts(), () -> {
-			place(info, 2, 1, 2, Material.OCHRE_FROGLIGHT, doors, info.getFacing());
-			chime(info, 2, 1, 4, doors);
-        }, new Long(20));
-		Bukkit.getScheduler().runTaskLater(info.getTrainCarts(), () -> {
-			place(info, 2, 1, 2, Material.GRAY_CONCRETE, doors, info.getFacing());
-        }, new Long(22));
+		Bukkit.getScheduler().runTaskTimer(info.getTrainCarts(), (task) -> {
+			place(info, 2, 1, 2, Material.GRAY_CONCRETE, doors, info.getFacing(), offset);
+			Bukkit.getScheduler().runTaskLater(info.getTrainCarts(), () -> {
+				place(info, 2, 1, 2, Material.OCHRE_FROGLIGHT, doors, info.getFacing(), offset);
+				chime(info, 2, 1, 4, doors);
+			}, 2L);
+			chimes += 4;
+			if(chimes > 20) {
+				task.cancel();
+			}
+		}, 2L, 4L);
+		
 	}
 	
 	@Override
@@ -165,14 +141,15 @@ public class SignActionPSD extends SignAction {
 		if (!info.isPowered())
 			return;
 		if (info.isTrainSign() && info.isAction(SignActionType.GROUP_ENTER)) {
+			String offset = info.getExtraLinesBelow()[0];
 			if (!info.hasRailedMember())
 				return;
 			String doors = info.getLine(2);
 			String duration = info.getLine(3);
 			String[] stop = info.getExtraLinesBelow();
 			Bukkit.getScheduler().runTaskLater(info.getTrainCarts(), () -> {
-				place(info, 2, 1, 2, Material.VERDANT_FROGLIGHT, Integer.parseInt(doors), info.getFacing());
-				place(info, 2, 0, 1, Material.REDSTONE_TORCH, Integer.parseInt(doors) - 1, info.getFacing());
+				place(info, 2, 1, 2, Material.VERDANT_FROGLIGHT, Integer.parseInt(doors), info.getFacing(), offset);
+				place(info, 2, 0, 1, Material.REDSTONE_TORCH, Integer.parseInt(doors) - 1, info.getFacing(), offset);
 			}, 16L);
 			
 			Bukkit.getScheduler().runTaskLater(info.getTrainCarts(), () -> {
@@ -181,8 +158,8 @@ public class SignActionPSD extends SignAction {
 	        }, new Long(Integer.parseInt(duration)*20-30) + 16L);
 			
 			Bukkit.getScheduler().runTaskLater(info.getTrainCarts(), () -> {
-				place(info, 2, 1, 2, Material.PEARLESCENT_FROGLIGHT, Integer.parseInt(doors), info.getFacing());
-				place(info, 2, 0, 1, Material.AIR, Integer.parseInt(doors) - 1, info.getFacing());
+				place(info, 2, 1, 2, Material.PEARLESCENT_FROGLIGHT, Integer.parseInt(doors), info.getFacing(), offset);
+				place(info, 2, 0, 1, Material.AIR, Integer.parseInt(doors) - 1, info.getFacing(), offset);
 	        }, new Long(Integer.parseInt(duration)*20-2) + 16L);
 
 

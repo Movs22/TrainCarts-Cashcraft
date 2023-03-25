@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -400,9 +401,14 @@ public class SignActionSpawn extends SignAction {
                     properties.setFDestination(Fdestination + "~1");
             		properties.setFDestIndex(0);
             		PathNode ReverseDest = world.getNodeByName(destination);
+            		if(ReverseDest == null) {
+            			group.getTrainCarts().getLogger().log(Level.WARNING, "[Train_Carts] Failed to find node " + destination + ". Got " + ReverseDest);
+            			group.destroy();
+            			return null;
+            		}
             		PathNode FinalDest = world.getNodeByName(Fdestination + "~1");
                     if(FinalDest == null || FinalDest.location == null) {
-                    	System.out.println("Failed to find node " + Fdestination + "~1");
+                    	group.getTrainCarts().getLogger().log(Level.WARNING, "[Train_Carts] Failed to find node " + Fdestination + ". Got " + FinalDest);
                     	group.destroy();
                     	break;
                     } 

@@ -1,5 +1,5 @@
 name: Train_Carts
-version: 1627
+version: ${project.build.number}
 dev-url: ${project.url}
 build: ${project.build.number}
 description: Plugin that allows the use of minecart trains with adjustable settings

@@ -30,7 +30,7 @@ public class StationParser {
 		if (name.contains("$SVR"))
 			return "#B955FF";
 		if(name.contains("$Purple"))
-			return "#84009f";
+			return "#54009f";
 		if (name.contains("$Blue"))
 			return "#387eff";
 		if (name.contains("$Green"))
@@ -47,6 +47,8 @@ public class StationParser {
 			return "#0075B4";
 		if (name.contains("$FTrams"))
 			return "#BFAF81";
+		if(name.contains("$Cyan"))
+			return "#86c4bf";
 		if(name.contains("$Beige"))
 			return "#fce6a7";
 		if(name.startsWith("$")) 
@@ -74,6 +76,8 @@ public class StationParser {
 				result = result + (", {\"text\":\"Pink\",\"color\":\"" + convertColor("$Pink") + "\"}");
 			} else if (string.charAt(i) == 'L') {
 				result = result + (", {\"text\":\"Purple\",\"color\":\"" + convertColor("$Purple") + "\"}");
+			} else if (string.charAt(i) == 'C') {
+				result = result + (", {\"text\":\"Cyan\",\"color\":\"" + convertColor("$Cyan") + "\"}");
 			} else if (string.charAt(i) == 'R') {
 				result = result + (", {\"text\":\"Red\",\"color\":\"" + convertColor("$Red") + "\"}");
 			} else if (string.charAt(i) == 'Y') {

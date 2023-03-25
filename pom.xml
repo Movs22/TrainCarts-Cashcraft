@@ -4,7 +4,7 @@
 
     <groupId>com.bergerkiller.bukkit</groupId>
     <artifactId>TrainCarts</artifactId>
-    <version>1.19.3-v2-SNAPSHOT</version>
+    <version>1.19.3-Cashcraft-1631</version>
     <packaging>jar</packaging>
 
     <name>TrainCarts</name>
@@ -12,7 +12,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.build.number>NO-CI</project.build.number>
+        <project.build.number>1631</project.build.number>
         <project.mcversion>1.19.3</project.mcversion>
         <project.cbversion>${project.mcversion}-R0.1-SNAPSHOT</project.cbversion>
         <project.bkcversion>1.19.3-v1</project.bkcversion>
@@ -31,9 +31,6 @@
                     <name>env.BUILD_NUMBER</name>
                 </property>
             </activation>
-            <properties>
-                <project.build.number>NO-CI</project.build.number>
-            </properties>
         </profile>
     </profiles>
 
@@ -252,7 +249,7 @@
     <!-- Build -->
     <build>
         <!-- Export artifact with name that includes the build number -->
-        <finalName>${project.name}-${project.version}-${project.build.number}</finalName>
+        <finalName>${project.name}-${project.version}-NO-CI</finalName>
 
         <!-- Resources (the filtering allows us to use project properties in plugin.yml) -->
         <resources>
@@ -374,7 +371,7 @@
                         </goals>
                         <configuration>
                             <target>
-                                <copy file="target/${project.name}-${project.version}-${project.build.number}.jar" tofile="target/static/${project.name}.jar"/>
+                                <copy file="target/${project.name}-${project.version}-NO-CI.jar" tofile="target/static/${project.name}.jar"/>
                             </target>
                         </configuration>
                     </execution>

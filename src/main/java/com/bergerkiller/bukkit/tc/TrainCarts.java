@@ -81,7 +81,7 @@ import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class TrainCarts extends PluginBase {
-	public int _version = 1627;
+	public int _version = 1631;
     public static TrainCarts plugin;
     private Task signtask;
     private Task autosaveTask;
@@ -545,7 +545,7 @@ public class TrainCarts extends PluginBase {
 
         // Register TrainCarts default attachment types
         CartAttachment.registerDefaultAttachments();
-        if(this.getVersion() != ("" + this.getTCVersion())) {
+        if(!this.getVersion().equals("" + this.getTCVersion())) {
         	this.log(Level.SEVERE, "Traincart version mismatch. Found " + this.getVersion() + " on config but " + this.getTCVersion() + " on TrainCarts.java");
         }
         // Register TrainCarts default rail types
