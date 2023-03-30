@@ -1840,7 +1840,7 @@ public class MinecartGroup extends MinecartGroupStore implements IPropertiesHold
 
             // Server bugfix: prevents an old Minecart duplicate staying behind inside a chunk when saved
             // This issue has been resolved on Paper, see https://github.com/PaperMC/Paper/issues/1223
-            for (MinecartMember<?> mm : this) {
+            /*for (MinecartMember<?> mm : this) {
                 CommonEntity<?> entity = mm.getEntity();
                 if (entity.isInLoadedChunk()) {
                     int cx = entity.getChunkX();
@@ -1849,7 +1849,7 @@ public class MinecartGroup extends MinecartGroupStore implements IPropertiesHold
                         ChunkHandle.fromBukkit(entity.getWorld().getChunkAt(cx, cz)).markDirty();
                     }
                 }
-            }
+            }*/
 
         } catch (GroupUnloadedException ex) {
             //this group is gone

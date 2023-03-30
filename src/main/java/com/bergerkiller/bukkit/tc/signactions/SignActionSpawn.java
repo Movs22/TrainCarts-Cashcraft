@@ -387,6 +387,9 @@ public class SignActionSpawn extends SignAction {
             		String RdestStr = node.destination.getLine(3);
             		String RplatStr = node.destination.getLine(6);
             		String Fdestination;
+            		if(platIndex > RdestStr.length() - 1) {
+            			platIndex = platIndex % RdestStr.length();
+            		}
             		if(RdestStr.charAt(platIndex) == '1') {
             			Fdestination = node.destination.getLine(4);
                     } else {
@@ -398,19 +401,22 @@ public class SignActionSpawn extends SignAction {
             		properties.setDestIndex( (destStr.charAt(RouteIndex) == '1' ? 0 : 1)  );
             		properties.setDestination(destination);
             		
-                    properties.setFDestination(Fdestination + "~1");
-            		properties.setFDestIndex(0);
+            		properties.setFDestIndex(RdestStr.charAt(platIndex));
             		PathNode ReverseDest = world.getNodeByName(destination);
             		if(ReverseDest == null) {
             			group.getTrainCarts().getLogger().log(Level.WARNING, "[Train_Carts] Failed to find node " + destination + ". Got " + ReverseDest);
             			group.destroy();
             			return null;
             		}
-            		PathNode FinalDest = world.getNodeByName(Fdestination + "~1");
+            		properties.setFDestination(Fdestination);
+            		PathNode FinalDest = world.getNodeByName(Fdestination);
+            		if(FinalDest == null || FinalDest.location == null) {
+            			FinalDest = world.getNodeByName(Fdestination + "~1");
+            		}
                     if(FinalDest == null || FinalDest.location == null) {
                     	group.getTrainCarts().getLogger().log(Level.WARNING, "[Train_Carts] Failed to find node " + Fdestination + ". Got " + FinalDest);
                     	group.destroy();
-                    	break;
+                    	return null;
                     } 
                     ns = Fdestination;
                     //Adds stations from Spawn > Dest and triggers the PIS on its way
@@ -425,9 +431,9 @@ public class SignActionSpawn extends SignAction {
                     			int l = 4 + (destStr.charAt(RouteIndex) == '1' ? 0 : 1);       
                         		time = time + convertSecs( node2.destination.getLine(l)) + Integer.parseInt(node2.destination.getLine(1).split(" ")[2]);
                         		if(node2.destination.getLine(1).contains("T") && !ns.equals("")) {
-                            		ArrivalSigns.trigger(node2.destination.getSign().trackedSign.sign , group.head(), node2.destination.getLine(7).split("#")[(destStr.charAt(RouteIndex) == '1' ? 0 : 1)], parseSecs(pst), true, ns);
+                            		//ArrivalSigns.trigger(node2.destination.getSign().trackedSign.sign , group.head(), node2.destination.getLine(7).split("#")[(destStr.charAt(RouteIndex) == '1' ? 0 : 1)], parseSecs(pst), true, ns);
                             	} else {
-                            		ArrivalSigns.trigger(node2.destination.getSign().trackedSign.sign, group.head(), node2.destination.getLine(7).split("#")[(destStr.charAt(RouteIndex) == '1' ? 0 : 1)], parseSecs(pst), true, destination);
+                            		//ArrivalSigns.trigger(node2.destination.getSign().trackedSign.sign, group.head(), node2.destination.getLine(7).split("#")[(destStr.charAt(RouteIndex) == '1' ? 0 : 1)], parseSecs(pst), true, destination);
                             	}
                         		pst = time;
                     		}
@@ -441,7 +447,7 @@ public class SignActionSpawn extends SignAction {
                     			properties.addFStation(node2.destination.getName().split("~")[0], true, node2.destination.getLine(7).split("#")[0]);
                     			int l = 4;       
                         		time = time + convertSecs( node2.destination.getLine(l)) + Integer.parseInt(node2.destination.getLine(1).split(" ")[2]);
-                            	ArrivalSigns.trigger(node2.destination.getSign().trackedSign.sign , group.head(), node2.destination.getLine(7).split("#")[0], parseSecs(pst), true, ns);
+                            	//ArrivalSigns.trigger(node2.destination.getSign().trackedSign.sign , group.head(), node2.destination.getLine(7).split("#")[0], parseSecs(pst), true, ns);
                         		pst = time;
                     		}
                     }
@@ -467,15 +473,15 @@ public class SignActionSpawn extends SignAction {
         	signs.put(spawnSign, values);
         	
             //checks the next trains to spawn and their routes (and triggers the PIS)
-            PathConnection[] Froute;
+            /*PathConnection[] Froute;
             PathNode Fspawn;
-            PathNode Fdest;
+            PathNode Fdest;*/
             //TODO:
             //Fix incorrect timings being added
             //First station is getting the last train arrivals (i.e. 9:XX) instead of the first train arrivals
             //TODO: FIXED
             
-            for(int i = 1; i < spawn.getLine(6).length(); i++) {
+            /*for(int i = 1; i < spawn.getLine(6).length(); i++) {
             	if(RouteIndex > spawn.getLine(6).length() - 1) {
             		RouteIndex = RouteIndex % spawn.getLine(6).length();
             	}
@@ -503,7 +509,10 @@ public class SignActionSpawn extends SignAction {
                 		destination = StationParser.parseStation(destination);
                 		destination = destination.split("~")[0] + "~" + RplatStr.charAt(platIndex);
                 		PathNode ReverseDest = world.getNodeByName(destination);
-                		PathNode FinalDest = world.getNodeByName(Fdestination + "~1");
+                		PathNode FinalDest = world.getNodeByName(Fdestination);
+                		if(FinalDest == null || FinalDest.location == null) {
+                			FinalDest = world.getNodeByName(Fdestination + "~1");	
+                		}
                         if(FinalDest == null || FinalDest.location == null) {
                         	System.out.println("Failed to find node " + Fdestination + "~1");
                         	break;
@@ -551,7 +560,7 @@ public class SignActionSpawn extends SignAction {
                 	}
                 }
                 RouteIndex += 1;
-            }
+            }*/
             return spawnLocations;
         }
         return null;

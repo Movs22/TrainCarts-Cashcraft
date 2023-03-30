@@ -57,7 +57,7 @@ public class SignActionReverse extends SignAction {
         String newDestination = newDestinations[0];
         String DestStr = info.getLine(3);
         String PlatStr = info.getLine(6);
-        if(RouteIndex > DestStr.length() - 1) {
+        if(RouteIndex > PlatStr.length() - 1) {
         	RouteIndex = RouteIndex % PlatStr.length();
         }
         if(DestStr.charAt(RouteIndex) == '1') {

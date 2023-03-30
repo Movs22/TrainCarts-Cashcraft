@@ -1,25 +1,20 @@
 package com.bergerkiller.bukkit.tc.signactions;
 
-import com.bergerkiller.bukkit.common.Task;
-import com.bergerkiller.bukkit.common.utils.ParseUtil;
 import com.bergerkiller.bukkit.tc.ArrivalSigns;
 import com.bergerkiller.bukkit.tc.Direction;
 import com.bergerkiller.bukkit.tc.Permission;
 import com.bergerkiller.bukkit.tc.Station;
-import com.bergerkiller.bukkit.tc.TrainCarts;
+
 import com.bergerkiller.bukkit.tc.actions.GroupActionWaitStationRouting;
 import com.bergerkiller.bukkit.tc.controller.MinecartGroup;
 import com.bergerkiller.bukkit.tc.controller.MinecartMember;
 import com.bergerkiller.bukkit.tc.events.SignActionEvent;
 import com.bergerkiller.bukkit.tc.events.SignChangeActionEvent;
-import com.bergerkiller.bukkit.tc.pathfinding.PathPredictEvent;
+
 import com.bergerkiller.bukkit.tc.utils.SignBuildOptions;
 import com.bergerkiller.bukkit.tc.utils.StationParser;
-import com.bergerkiller.bukkit.tc.utils.TimeDurationFormat;
-import com.google.gson.stream.JsonReader;
 
 import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
 
 import org.bukkit.Bukkit;
@@ -86,10 +81,13 @@ public class SignActionStation extends SignAction {
 		if (!info.hasRails() || !info.hasGroup() || info.getGroup().isEmpty()) {
 			return;
 		}
+		String line = info.getLine(2).split(">")[0];
 		if(info.getExtraLinesBelow().length < 4) return;
 		MinecartGroup group = info.getGroup();
 		Station station = new Station(info);
+		if(!info.getGroup().getProperties().getStations().contains(StationParser.parseStation(info.getLine(3).split("~")[0]))) return;
 		if (info.isAction(SignActionType.GROUP_LEAVE)) {
+			info.getGroup().getProperties().stop(StationParser.parseStation(info.getLine(3)).split("~")[0]);
 			if(station.isTerminus() && !info.getGroup().getProperties().getDestination().equalsIgnoreCase(info.getGroup().getProperties().getFDestination()) && info.getGroup().getProperties().getFDestination() != null) {
 				info.getGroup().getProperties().loadNext();
 			}
@@ -98,67 +96,68 @@ public class SignActionStation extends SignAction {
 			}
 			if(!info.getExtraLinesBelow()[0].equalsIgnoreCase("") && !info.getExtraLinesBelow()[1].equalsIgnoreCase("")) {
 				if(info.getGroup().getProperties().getStations().toArray().length > 0) {
-					announce(info, info.getGroup(), "This is a " + info.getLine(2).replaceAll("\\$", "") + " Line service to " + info.getGroup().getProperties().getDestination().split("~")[0] + ".", StationParser.convertColor(info.getLine(2)), true, false);
+					announce(info, info.getGroup(), "This is a " + info.getLine(2).replaceAll("\\$", "").split(">")[0] + " Line service to " + info.getGroup().getProperties().getDestination().split("~")[0] + ".", StationParser.convertColor(info.getLine(2).split(">")[0]), true, false);
 					if(info.getGroup().getProperties().checkNextStation() == false) {
 						Bukkit.getScheduler().runTaskLater(info.getTrainCarts(), () -> {
-							announce(info, info.getGroup(), "The next station is closed.", StationParser.convertColor(info.getLine(2)), true, false);
+							announce(info, info.getGroup(), "The next station is closed.", StationParser.convertColor(line), true, false);
 						}, 60L);
 					}
 					Bukkit.getScheduler().runTaskLater(info.getTrainCarts(), () -> {
-						announce(info, info.getGroup(), "The next station is " + info.getGroup().getProperties().getNextStation(true) + ".", StationParser.convertColor(info.getLine(2)), true, false);
+						announce(info, info.getGroup(), "The next station is " + info.getGroup().getProperties().getNextStation(true) + ".", StationParser.convertColor(line), true, false);
 					}, info.getGroup().getProperties().checkNextStation() == true ? 60L : 120L);
 				}
 			}
 			info.setLevers(false);
 			return;
 		}
-		if (info.getFacing() != info.getGroup().head().getDirection().getOppositeFace()) return;
 		
 		// Check if not already targeting
-		
-		if(!info.getGroup().getProperties().getStations().contains(StationParser.parseStation(info.getLine(3).split("~")[0]))) return;
+		if (info.getFacing() != info.getGroup().head().getDirection().getOppositeFace()) return;
 		if (info.isAction(SignActionType.GROUP_ENTER) && info.getFacing() == info.getGroup().head().getDirection().getOppositeFace()) {
-			ArrivalSigns.trigger(info.getSign(), info.getMember(), info.getExtraLinesBelow()[3].split("#")[group.getProperties().getDestIndex()], "-" + (station.getDelay()/1000 + 0.35), true, null, true);
 			Bukkit.getScheduler().runTaskLater(info.getTrainCarts(), () -> {
 				//ArrivalSigns.timeCalcStartMDest(info.getSign().getBlock(), info.getMember(), info.getGroup().getProperties().getDestIndex(), 4, 5, true);
 				if(info.getExtraLinesBelow()[0].equalsIgnoreCase("") || info.getExtraLinesBelow()[1].equalsIgnoreCase("")) {
 	            	ArrivalSigns.timeCalcStartMDest(info.getSign().getBlock(), info.getMember(), info.getGroup().getProperties().getDestIndex(), 4, 5, true);
 	            }
 				if(group.getProperties().getFDestination() != null) {
-					ArrivalSigns.trigger(info.getSign(), info.getMember(), group.getProperties().getNextStationVar(true), info.getExtraLinesBelow()[info.getGroup().getProperties().getDestIndex()], true, "[KEEP]", true);
+					//ArrivalSigns.trigger(info.getSign(), info.getMember(), group.getProperties().getNextStationVar(true), info.getExtraLinesBelow()[info.getGroup().getProperties().getDestIndex()], true, "[KEEP]", true);
 				} else {
-					ArrivalSigns.trigger(info.getSign(), info.getMember(), group.getProperties().getNextStationVar(true), info.getExtraLinesBelow()[info.getGroup().getProperties().getDestIndex()], true, "[KEEP]", true);
+					//ArrivalSigns.trigger(info.getSign(), info.getMember(), group.getProperties().getNextStationVar(true), info.getExtraLinesBelow()[info.getGroup().getProperties().getDestIndex()], true, "[KEEP]", true);
 				}
+				if(info.getLine(2).split(">").length == 1) {
+					info.setLine(2, info.getLine(2) + ">50");
+				}
+				ArrivalSigns.trigger(info.getSign(), info.getMember(), info.getExtraLinesBelow()[3].split("#")[group.getProperties().getDestIndex()], "00:00:" + info.getLine(2).split(">")[1], true, "[KEEP]", true);
 			}, station.getDelay()/50);
-			info.getGroup().getProperties().stop(StationParser.parseStation(info.getLine(3)).split("~")[0]);
-			announce(info, info.getGroup(), "This station is " + StationParser.parseStation(info.getLine(3).split("~")[0]) + ".", info.getLine(2),
+			ArrivalSigns.trigger(info.getSign(), info.getMember(), info.getExtraLinesBelow()[3].split("#")[group.getProperties().getDestIndex()], "-" + (station.getDelay()/1000 + 0.35), true, null, true);
+			announce(info, info.getGroup(), "This station is " + StationParser.parseStation(info.getLine(3).split("~")[0]) + ".", info.getLine(2).split(">")[0],
 					true, false);
 			Long t = 50L;
 			if(info.getGroup().getProperties().getStations().toArray().length  < 1 || info.getGroup().getProperties().getDestination().split("~")[0].equalsIgnoreCase(StationParser.parseStation(info.getLine(3).split("~")[0])) ) {
 				Bukkit.getScheduler().runTaskLater(info.getTrainCarts(), () -> {
 					announce(info, info.getGroup(), "This train terminates here. Please take all your belongings when leaving the train.",
-							StationParser.convertColor(info.getLine(2)), false, false);
+							StationParser.convertColor(line), false, false);
 				}, t);
 				t += 50L;
 			}
 			Bukkit.getScheduler().runTaskLater(info.getTrainCarts(), () -> {
 				announce(info, info.getGroup(), "Mind the gap between the train and the platform.",
-						StationParser.convertColor(info.getLine(2)), false, false);
+						StationParser.convertColor(line).split(">")[0], false, false);
 			}, t);
 			t += 50L;
-			if (StationParser.parseMetro(info.getExtraLinesBelow()[2], info.getLine(2)) != null && StationParser.parseMetro(info.getExtraLinesBelow()[2], info.getLine(2)) != "[]") {
+			if (StationParser.parseMetro(info.getExtraLinesBelow()[2], line) != null && StationParser.parseMetro(info.getExtraLinesBelow()[2], line) != "[]") {
 				Bukkit.getScheduler().runTaskLater(info.getTrainCarts(), () -> {
 					announce(info, info.getGroup(),
-							StationParser.parseMetro(info.getExtraLinesBelow()[2], StationParser.convertColor(info.getLine(2))),
-							StationParser.convertColor(info.getLine(2)), false, true);
+							StationParser.parseMetro(info.getExtraLinesBelow()[2], StationParser.convertColor(line)),
+							StationParser.convertColor(line).split(">")[0], false, true);
 				}, t);
 				t += 50L;
 			} 
-			if (StationParser.parseRail(info.getExtraLinesBelow()[2], info.getLine(2)) != null && StationParser.parseMetro(info.getExtraLinesBelow()[2], info.getLine(2)) != "[]") {
+			if (StationParser.parseRail(info.getExtraLinesBelow()[2], line) != null && StationParser.parseMetro(info.getExtraLinesBelow()[2], line) != "[]") {
 				Bukkit.getScheduler().runTaskLater(info.getTrainCarts(), () -> {
 						announce(info, info.getGroup(),
-								StationParser.parseRail(info.getExtraLinesBelow()[2], StationParser.convertColor(info.getLine(2))),
-								StationParser.convertColor(info.getLine(2)), false, true);
+								StationParser.parseRail(info.getExtraLinesBelow()[2], StationParser.convertColor(line)),
+								StationParser.convertColor(line), false, true);
 				}, t);
 			}
 		}

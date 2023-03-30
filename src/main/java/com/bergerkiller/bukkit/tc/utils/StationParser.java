@@ -13,7 +13,7 @@ public class StationParser {
 		}
 	
 	public static String[] listColor() {
-		String[] colors = {"CHR","GAR","HS1","HS2","SVR","Purple","Blue","Green","Orange","Pink","Blue","Green","Orange","Red","Yellow","NAT","FTrams","Beige"};
+		String[] colors = {"CHR","GAR","HS1","HS2","SVR","Purple","Blue","Green","Orange","Pink","Blue","Green","Orange","Red","Yellow","NAT","FTrams","Beige","Cyan"};
 		return colors;
 	}
 	
@@ -123,8 +123,7 @@ public class StationParser {
 			} else if (string.charAt(i) == 'S') {
 				result = result + (", {\"text\":\"South Valley Railway\",\"color\":\"" + convertColor("$SVR") + "\"}");
 			} else if (string.charAt(i) == 'A') {
-				result = result
-						+ (", {\"text\":\"Greater Arbridge Railway\",\"color\":\"" + convertColor("$GAR") + "\"}");
+				result = result + (", {\"text\":\"Greater Arbridge Railway\",\"color\":\"" + convertColor("$GAR") + "\"}");
 			} else if (string.charAt(i) == 'N') {
 				result = result + (", {\"text\":\"New Arbridge Trams\",\"color\":\"" + convertColor("$NAT") + "\"}");
 			} else if (string.charAt(i) == 'F') {

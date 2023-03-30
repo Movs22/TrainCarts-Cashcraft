@@ -4,7 +4,7 @@
 
     <groupId>com.bergerkiller.bukkit</groupId>
     <artifactId>TrainCarts</artifactId>
-    <version>1.19.3-Cashcraft-1631</version>
+    <version>1.19.4-Cashcraft-1637-DEV</version>
     <packaging>jar</packaging>
 
     <name>TrainCarts</name>
@@ -12,13 +12,13 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.build.number>1631</project.build.number>
-        <project.mcversion>1.19.3</project.mcversion>
+        <project.build.number>1637</project.build.number>
+        <project.mcversion>1.19.4</project.mcversion>
         <project.cbversion>${project.mcversion}-R0.1-SNAPSHOT</project.cbversion>
-        <project.bkcversion>1.19.3-v1</project.bkcversion>
+        <project.bkcversion>1.19.4-v1</project.bkcversion>
         <project.slversion>1.11.2-v2-SNAPSHOT</project.slversion>
         <project.mwversion>1.11.2-v2-SNAPSHOT</project.mwversion>
-        <project.preloaderversion>1.6</project.preloaderversion>
+        <project.preloaderversion>1.8</project.preloaderversion>
         <project.cloud.version>1.8.0-SNAPSHOT</project.cloud.version>
         <junit.version>4.11</junit.version>
     </properties>
@@ -96,14 +96,14 @@
         <dependency>
            <groupId>org.spigotmc</groupId>
            <artifactId>spigot-api</artifactId>
-           <version>1.19.3-R0.1-SNAPSHOT</version>
+           <version>1.19.4-R0.1-SNAPSHOT</version>
            <scope>provided</scope>
     	</dependency>
         <!-- The full server jar is only used during test; it should not be exposed as a dependency -->
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot</artifactId>
-            <version>1.19.3-R0.1-SNAPSHOT</version>
+            <version>1.19.4-R0.1-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
 
@@ -200,7 +200,7 @@
         <dependency>
             <groupId>com.bergerkiller.bukkit</groupId>
             <artifactId>BKCommonLib</artifactId>
-            <version>${project.bkcversion}</version>
+            <version>${project.bkcversion}-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
